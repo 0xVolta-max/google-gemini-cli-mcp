@@ -41,35 +41,35 @@ export class SmartRouter {
     let maxScore = 0;
 
     if (keywords.video > 0) {
-      scores["veo-2"] += keywords.video * 10;
+      scores["veo-2"] = (scores["veo-2"] || 0) + keywords.video * 10;
       primaryTaskType = "video";
     }
     if (keywords.audio > 0) {
-      scores["gemini-2.5-flash"] += keywords.audio * 8;
+      scores["gemini-2.5-flash"] = (scores["gemini-2.5-flash"] || 0) + keywords.audio * 8;
       primaryTaskType = "audio";
     }
     if (keywords.creative > 0) {
-      scores["imagen-4"] += keywords.creative * 7;
+      scores["imagen-4"] = (scores["imagen-4"] || 0) + keywords.creative * 7;
       primaryTaskType = "creative";
     }
     if (keywords.coding > 0) {
-      scores["gemini-2.5-pro"] += keywords.coding * 6;
+      scores["gemini-2.5-pro"] = (scores["gemini-2.5-pro"] || 0) + keywords.coding * 6;
       primaryTaskType = "coding";
     }
     if (keywords.reasoning > 0) {
-      scores["gemini-2.5-pro"] += keywords.reasoning * 8;
+      scores["gemini-2.5-pro"] = (scores["gemini-2.5-pro"] || 0) + keywords.reasoning * 8;
       primaryTaskType = "reasoning";
     }
     if (keywords.multimodal > 0) {
-      scores["gemini-2.5-flash"] += keywords.multimodal * 5;
+      scores["gemini-2.5-flash"] = (scores["gemini-2.5-flash"] || 0) + keywords.multimodal * 5;
       primaryTaskType = "multimodal";
     }
     if (keywords.embedding > 0) {
-      scores["gemini-2.5-pro"] += keywords.embedding * 10;
+      scores["gemini-2.5-pro"] = (scores["gemini-2.5-pro"] || 0) + keywords.embedding * 10;
       primaryTaskType = "embedding";
     }
     if (keywords.text > 0 || maxScore === 0) {
-      scores["gemini-2.5-flash"] += 3;
+      scores["gemini-2.5-flash"] = (scores["gemini-2.5-flash"] || 0) + 3;
     }
 
     let selectedModel = "gemini-2.5-flash";

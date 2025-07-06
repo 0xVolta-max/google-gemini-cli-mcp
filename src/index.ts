@@ -171,7 +171,7 @@ server.tool(
       statusText += `\n## 🔐 Authentifizierung\n`;
       statusText += isAuthenticated 
         ? "✅ **Authentifiziert und bereit**\n" 
-        : "❌ **Nicht authentifiziert** - Führen Sie aus: `gemini auth login`\n";
+        : "❌ **Nicht authentifiziert** - Konfigurieren Sie Ihren Gemini API Key\n";
       statusText += `\n## 💚 Kostenloses Kontingent\n`;
       statusText += `- **Anfragen pro Minute:** ${quota.requests}/60\n`;
       statusText += `- **Anfragen pro Tag:** ${quota.daily}/1000\n`;
@@ -232,7 +232,7 @@ async function main() {
     if (!isInstalled) {
       console.error("⚠️  Gemini CLI nicht installiert. Führen Sie aus: npm install -g @google/gemini-cli");
     } else if (!isAuthenticated) {
-      console.error("⚠️  Gemini CLI nicht authentifiziert. Führen Sie aus: gemini auth login");
+      console.error("⚠️  Gemini CLI nicht authentifiziert. Konfigurieren Sie Ihren Gemini API Key.");
     } else {
       console.error("✅ Gemini CLI bereit für kostenlose Anfragen!");
     }

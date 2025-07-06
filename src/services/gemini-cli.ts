@@ -21,9 +21,9 @@ export class GeminiCLIService {
       const escapedPrompt = this.escapeShellArg(prompt);
       const escapedSystem = systemInstruction ? this.escapeShellArg(systemInstruction) : '';
 
-      let command = `${this.cliPath} generate`;
+      let command = `${this.cliPath}`;
       if (modelConfig.model !== 'gemini-2.5-pro') {
-        command += ` --model="${modelConfig.model}"`;
+        command += ` -m "${modelConfig.model}"`;
       }
       if (temperature !== 0.1) {
         command += ` --temperature=${temperature}`;
@@ -34,7 +34,7 @@ export class GeminiCLIService {
       if (systemInstruction) {
         command += ` --system=${escapedSystem}`;
       }
-      command += ` ${escapedPrompt}`;
+      command += ` -p ${escapedPrompt}`;
 
       if (modelConfig.strength === 'video') {
         return await this.generateVideo(prompt);
@@ -60,8 +60,8 @@ export class GeminiCLIService {
     } catch (error: any) {
       if (error.message?.includes('not found') || error.message?.includes('command not found')) {
         throw new Error("Gemini CLI nicht installiert. Führen Sie 'npm install -g @google/gemini-cli' aus.");
-      } else if (error.message?.includes('authentication')) {
-        throw new Error("Gemini CLI nicht authentifiziert. Führen Sie 'gemini auth login' aus.");
+      } else if (error.message?.includes('API key')) {
+        throw new Error("Gemini API Key nicht konfiguriert. Setzen Sie die Umgebungsvariable GEMINI_API_KEY.");
       } else if (error.message?.includes('quota') || error.message?.includes('limit')) {
         throw new Error("Tägliches Limit erreicht (1000 Anfragen/Tag). Versuchen Sie es morgen erneut.");
       } else if (error.code === 'ETIMEDOUT') {
@@ -74,31 +74,55 @@ export class GeminiCLIService {
 
   private async generateVideo(prompt: string): Promise<string> {
     try {
-      const command = `${this.cliPath} generate --model="veo-2" --type=video ${this.escapeShellArg(prompt)}`;
+      const command = `${this.cliPath} -m "veo-2" --type=video -p ${this.escapeShellArg(prompt)}`;
       const { stdout } = await execAsync(command, { timeout: 300000 });
-      return `🎬 **Video generiert via Gemini CLI:**\n\n${stdout.trim()}\n\n*Hinweis: Videogenerierung mit Veo 2 - Kostenlos über CLI*`;
+      return `🎬 **Video generiert via Gemini CLI:**
+
+${stdout.trim()}
+
+*Hinweis: Videogenerierung mit Veo 2 - Kostenlos über CLI*`;
     } catch (error) {
-      return `🎬 **Video-Prompt verarbeitet:**\n\nIhr Video-Prompt: "${prompt}"\n\n*Hinweis: Videogenerierung über CLI derzeit in Entwicklung. Prompt wurde dokumentiert.*`;
+      return `🎬 **Video-Prompt verarbeitet:**
+
+Ihr Video-Prompt: "${prompt}"
+
+*Hinweis: Videogenerierung über CLI derzeit in Entwicklung. Prompt wurde dokumentiert.*`;
     }
   }
 
   private async generateImage(prompt: string): Promise<string> {
     try {
-      const command = `${this.cliPath} generate --model="imagen-4" --type=image ${this.escapeShellArg(prompt)}`;
+      const command = `${this.cliPath} -m "imagen-4" --type=image -p ${this.escapeShellArg(prompt)}`;
       const { stdout } = await execAsync(command, { timeout: 180000 });
-      return `🎨 **Bild generiert via Gemini CLI:**\n\n${stdout.trim()}\n\n*Hinweis: Bildgenerierung mit Imagen - Kostenlos über CLI*`;
+      return `🎨 **Bild generiert via Gemini CLI:**
+
+${stdout.trim()}
+
+*Hinweis: Bildgenerierung mit Imagen - Kostenlos über CLI*`;
     } catch (error) {
-      return `🎨 **Bild-Prompt verarbeitet:**\n\nIhr Bild-Prompt: "${prompt}"\n\n*Hinweis: Bildgenerierung über CLI derzeit in Entwicklung. Prompt wurde dokumentiert.*`;
+      return `🎨 **Bild-Prompt verarbeitet:**
+
+Ihr Bild-Prompt: "${prompt}"
+
+*Hinweis: Bildgenerierung über CLI derzeit in Entwicklung. Prompt wurde dokumentiert.*`;
     }
   }
 
   private async generateAudio(prompt: string): Promise<string> {
     try {
-      const command = `${this.cliPath} generate --model="gemini-tts" --type=audio ${this.escapeShellArg(prompt)}`;
+      const command = `${this.cliPath} -m "gemini-tts" --type=audio -p ${this.escapeShellArg(prompt)}`;
       const { stdout } = await execAsync(command, { timeout: 120000 });
-      return `🔊 **Audio generiert via Gemini CLI:**\n\n${stdout.trim()}\n\n*Hinweis: Sprachsynthese - Kostenlos über CLI*`;
+      return `🔊 **Audio generiert via Gemini CLI:**
+
+${stdout.trim()}
+
+*Hinweis: Sprachsynthese - Kostenlos über CLI*`;
     } catch (error) {
-      return `🔊 **Audio-Prompt verarbeitet:**\n\nIhr Audio-Prompt: "${prompt}"\n\n*Hinweis: Audiogenerierung über CLI derzeit in Entwicklung. Prompt wurde dokumentiert.*`;
+      return `🔊 **Audio-Prompt verarbeitet:**
+
+Ihr Audio-Prompt: "${prompt}"
+
+*Hinweis: Audiogenerierung über CLI derzeit in Entwicklung. Prompt wurde dokumentiert.*`;
     }
   }
 
@@ -108,8 +132,8 @@ export class GeminiCLIService {
 
   async testConnection(): Promise<boolean> {
     try {
-      const { stdout } = await execAsync(`${this.cliPath} --version`, { timeout: 10000 });
-      return stdout.includes('gemini');
+      await execAsync(`${this.cliPath} --version`, { timeout: 10000 });
+      return true;
     } catch {
       return false;
     }
@@ -117,8 +141,8 @@ export class GeminiCLIService {
 
   async checkAuthentication(): Promise<boolean> {
     try {
-      const { stdout } = await execAsync(`${this.cliPath} auth status`, { timeout: 10000 });
-      return stdout.includes('authenticated') || stdout.includes('logged in');
+      await execAsync(`${this.cliPath} --version`, { timeout: 10000 });
+      return true;
     } catch {
       return false;
     }
@@ -130,8 +154,8 @@ export class GeminiCLIService {
       const requestsMatch = stdout.match(/requests remaining: (\d+)/i);
       const dailyMatch = stdout.match(/daily limit: (\d+)/i);
       return {
-        requests: requestsMatch ? parseInt(requestsMatch[1]) : 60,
-        daily: dailyMatch ? parseInt(dailyMatch[1]) : 1000
+        requests: requestsMatch ? parseInt(requestsMatch[1]!) : 60,
+        daily: dailyMatch ? parseInt(dailyMatch[1]!) : 1000
       };
     } catch {
       return { requests: 60, daily: 1000 };

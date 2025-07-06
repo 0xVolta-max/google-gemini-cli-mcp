@@ -1,0 +1,21 @@
+google-gemini-cli-mcp/
+├── src/
+│   ├── index.ts
+│   ├── config/
+│   │   └── models.ts
+│   ├── services/
+│   │   └── gemini-cli.ts
+│   └── utils/
+│       └── routing.ts
+├── docs/
+│   ├── INSTALLATION.md
+│   ├── API.md
+│   └── EXAMPLES.md
+├── examples/
+│   └── trae-config.json
+├── .env.example
+├── .gitignore
+├── package.json
+├── tsconfig.json
+├── README.md
+└── Dockerfile

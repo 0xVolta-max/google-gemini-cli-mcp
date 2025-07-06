@@ -1,7 +1,7 @@
-json{
+{
   "name": "google-gemini-cli-mcp",
   "version": "1.0.0",
-  "description": "MCP Server für Google Gemini CLI - Kostenloser Zugang zu allen Google AI Modellen",
+  "description": "MCP Server für Google Gemini CLI – Kostenloser Zugang zu allen Google AI Modellen",
   "main": "dist/index.js",
   "scripts": {
     "build": "tsc",

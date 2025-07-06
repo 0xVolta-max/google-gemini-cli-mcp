@@ -1,4 +1,4 @@
-typescript#!/usr/bin/env node
+#!/usr/bin/env node
 
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
@@ -19,9 +19,6 @@ const server = new McpServer({
 
 const availableModels = Object.keys(GOOGLE_MODELS) as [string, ...string[]];
 
-/**
- * Tool 1: Google AI CLI Consultation
- */
 server.tool(
   "consult-gemini-cli",
   "Konsultiere Google AI Modelle über die kostenlose Gemini CLI",
@@ -69,10 +66,9 @@ server.tool(
         throw new Error("Unerwartete CLI-Antwort: Kein Content erhalten");
       }
 
-      // Quota-Informationen abrufen
       const quota = await geminiCLIService.getRemainingQuota();
 
-      const costIcon = "💚"; // Immer grün für kostenlos
+      const costIcon = "💚";
       const quotaInfo = `📊 **Verbleibendes Kontingent:** ${quota.requests}/min, ${quota.daily}/Tag`;
 
       return {
@@ -98,9 +94,6 @@ server.tool(
   }
 );
 
-/**
- * Tool 2: Smart CLI Router
- */
 server.tool(
   "smart-cli-route",
   "Automatische Auswahl des optimalen Google AI Modells über kostenlose CLI",
@@ -113,7 +106,6 @@ server.tool(
     try {
       const routing = SmartRouter.analyzeAndRoute(query, force_model);
       const modelConfig = GOOGLE_MODELS[routing.selectedModel];
-      
       if (!modelConfig) {
         throw new Error(`Modell-Konfiguration für ${routing.selectedModel} nicht gefunden`);
       }
@@ -161,9 +153,6 @@ server.tool(
   }
 );
 
-/**
- * Tool 3: CLI Status & Quota
- */
 server.tool(
   "cli-status",
   "Überprüfe Gemini CLI Status und verbleibendes kostenloses Kontingent",
@@ -175,36 +164,26 @@ server.tool(
       const quota = await geminiCLIService.getRemainingQuota();
 
       let statusText = "# 📊 Gemini CLI Status\n\n";
-
-      // Installation Status
       statusText += `## 🔧 Installation\n`;
       statusText += isInstalled 
         ? "✅ **Gemini CLI installiert**\n" 
         : "❌ **Gemini CLI nicht installiert** - Führen Sie aus: `npm install -g @google/gemini-cli`\n";
-
-      // Authentifizierung Status
       statusText += `\n## 🔐 Authentifizierung\n`;
       statusText += isAuthenticated 
         ? "✅ **Authentifiziert und bereit**\n" 
         : "❌ **Nicht authentifiziert** - Führen Sie aus: `gemini auth login`\n";
-
-      // Quota Informationen
       statusText += `\n## 💚 Kostenloses Kontingent\n`;
       statusText += `- **Anfragen pro Minute:** ${quota.requests}/60\n`;
       statusText += `- **Anfragen pro Tag:** ${quota.daily}/1000\n`;
       statusText += `- **Kosten:** VÖLLIG KOSTENLOS 🎉\n`;
-
-      // Verfügbare Modelle
       statusText += `\n## 🤖 Verfügbare Modelle (alle kostenlos)\n`;
       for (const [modelName, config] of Object.entries(GOOGLE_MODELS)) {
         const strengthIcon = {
           text: "📝", coding: "💻", creative: "🎨", video: "🎬", 
           audio: "🔊", reasoning: "🧠", multimodal: "🎭", embedding: "🔢"
         }[config.strength] || "🤖";
-        
         statusText += `- ${strengthIcon} **${modelName}** - ${config.description}\n`;
       }
-
       statusText += `\n## 🎯 Nächste Schritte\n`;
       if (!isInstalled) {
         statusText += `1. Installieren: \`npm install -g @google/gemini-cli\`\n`;
@@ -215,7 +194,6 @@ server.tool(
       if (isInstalled && isAuthenticated) {
         statusText += `✅ **Alles bereit!** Nutzen Sie die Tools für kostenlose AI-Anfragen.\n`;
       }
-
       return {
         content: [
           {
@@ -224,7 +202,6 @@ server.tool(
           }
         ]
       };
-
     } catch (error: any) {
       return {
         content: [
@@ -245,11 +222,10 @@ async function main() {
     await server.connect(transport);
 
     console.error("🚀 Google Gemini CLI MCP Server läuft");
-    console.error("💚 VÖLLIG KOSTENLOS - 1000 Anfragen/Tag");
+    console.error("💚 VÖLLIG KOSTENLOS – 1000 Anfragen/Tag");
     console.error("🎯 Verfügbare Modelle:", Object.keys(GOOGLE_MODELS).length);
     console.error("⚡ Powered by Google Gemini CLI");
 
-    // CLI Status prüfen
     const isInstalled = await geminiCLIService.testConnection();
     const isAuthenticated = await geminiCLIService.checkAuthentication();
 

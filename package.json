@@ -1,0 +1,28 @@
+json{
+  "name": "google-gemini-cli-mcp",
+  "version": "1.0.0",
+  "description": "MCP Server für Google Gemini CLI - Kostenloser Zugang zu allen Google AI Modellen",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "tsx src/index.ts",
+    "setup-cli": "npm install -g @google/gemini-cli",
+    "auth-cli": "gemini auth login"
+  },
+  "bin": {
+    "google-gemini-cli-mcp": "dist/index.js"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.0",
+    "zod": "^3.22.4",
+    "dotenv": "^16.4.5",
+    "child_process": "^1.0.2",
+    "util": "^0.12.5"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.3",
+    "@types/node": "^20.12.7",
+    "tsx": "^4.7.2"
+  }
+}

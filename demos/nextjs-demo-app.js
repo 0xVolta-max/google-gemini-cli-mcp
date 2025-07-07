@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 
-const { GeminiCLIService } = require('./dist/services/gemini-cli.js');
-const { SmartRouter } = require('./dist/utils/routing.js');
-const { GOOGLE_MODELS } = require('./dist/config/models.js');
+const { GeminiCLIService } = require('../dist/services/gemini-cli.js');
+const { SmartRouter } = require('../dist/utils/routing.js');
+const { GOOGLE_MODELS } = require('../dist/config/models.js');
 const fs = require('fs').promises;
 const path = require('path');
 
@@ -283,8 +283,8 @@ ${result.response.substring(0, 500)}${result.response.length > 500 ? '...' : ''}
 Generated on: ${new Date().toISOString()}
 `;
 
-    await fs.writeFile('nextjs-demo-report.md', report, 'utf-8');
-    console.log('\n📄 Demo report saved to: nextjs-demo-report.md');
+    await fs.writeFile('./nextjs-demo-report.md', report, 'utf-8');
+    console.log('\n📄 Demo report saved to: ./nextjs-demo-report.md');
   }
 }
 

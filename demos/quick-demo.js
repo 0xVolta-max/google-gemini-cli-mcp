@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
-const { GeminiCLIService } = require('./dist/services/gemini-cli.js');
-const { GOOGLE_MODELS } = require('./dist/config/models.js');
+const { GeminiCLIService } = require('../dist/services/gemini-cli.js');
+const { GOOGLE_MODELS } = require('../dist/config/models.js');
 
 async function quickDemo() {
   console.log('🚀 Google Gemini CLI MCP Server Demo');
